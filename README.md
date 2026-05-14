@@ -1,97 +1,251 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# SocialConnect
 
-# Getting Started
+A full-featured social media mobile application built with React Native. SocialConnect supports real-time feeds, user profiles, comments, notifications, and rich media posts — all backed by Firebase and delivered through a polished, dark-mode-ready design system.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+---
 
-## Step 1: Start Metro
+## Features
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+### Authentication
+- Email/password login and sign-up via Firebase Auth
+- Two-step sign-up with progress indicator and password strength meter
+- Forgot password flow with animated success confirmation
+- Auth guard: app routes automatically based on Firebase `onAuthStateChanged`
+- Animated splash screen shown during cold-start auth resolution
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+### Home Feed
+- Live post feed powered by Firestore
+- Story row with unseen/seen gradient ring animations
+- Animated like button with 8-particle burst effect and haptic feedback
+- Pull-to-retry on failed fetch
+- Floating action button (FAB) to create a new post
 
-```sh
-# Using npm
-npm start
+### Posts & Comments
+- Create posts with image picker and audience selector (full-screen composer)
+- Character counter and action bar in post composer
+- Comment screen with chat-bubble layout and inline send bar
+- Comments loaded from Firestore subcollection `/posts/{postId}/comments/{commentId}`
+- Real-time like and comment updates via socket.io
 
-# OR using Yarn
-yarn start
+### Profiles
+- Own profile with Posts / Liked / Saved tabs and stats row
+- Other user profiles with animated Follow/Following toggle and Message button
+- Edit profile with photo picker, Formik validation, and unsaved-changes dialog
+
+### Discover
+- Search bar with animated heading hide on focus
+- Trending tags, suggested users, and masonry post grid
+
+### Notifications
+- Segmented control: All / Mentions / Likes / Follows
+- Grouped by time with unread highlight bar
+- Firebase Cloud Messaging (FCM) push notifications; token saved to Firestore
+
+### Settings
+- Grouped sections with Switch toggles
+- Danger zone with logout
+- Version footer
+
+---
+
+## Tech Stack
+
+| Layer | Library / Version |
+|---|---|
+| Framework | React Native 0.85.3 |
+| Language | TypeScript 5.8 |
+| State | Redux Toolkit 2.x + React-Redux 9.x |
+| Navigation | React Navigation 7 (native stack + bottom tabs) |
+| Backend | Firebase (Auth, Firestore, Cloud Messaging) v24 |
+| Real-time | socket.io-client 4.x |
+| Forms | Formik 2.x + Yup 1.x |
+| Icons | react-native-vector-icons 10.x (Feather + MaterialCommunityIcons) |
+| Animations | React Native Animated API |
+| Haptics | react-native-haptic-feedback 2.x |
+| Gradients | react-native-linear-gradient 2.x |
+| Image picker | react-native-image-picker 8.x |
+| Testing | Jest 29 + React Native Jest preset |
+
+---
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── AppHeader.tsx         # Safe-area-aware header
+│   ├── AppIcon.tsx           # Unified icon component (Feather / MCI)
+│   ├── AnimatedLikeButton.tsx
+│   ├── Avatar.tsx            # Circular avatar with initials + story ring
+│   ├── CustomTabBar.tsx      # Floating pill tab bar with FAB
+│   ├── EmptyState.tsx
+│   ├── LoadingShimmer.tsx
+│   ├── PostCard.tsx
+│   ├── PostFeed.tsx
+│   ├── StoryRow.tsx
+│   └── Toast.tsx             # Slide-in toast (success / error / info)
+├── screens/
+│   ├── SplashScreen.tsx
+│   ├── WelcomeScreen.tsx
+│   ├── LoginScreen.tsx
+│   ├── SignUpScreen.tsx
+│   ├── ForgotPasswordScreen.tsx
+│   ├── HomeScreen.tsx
+│   ├── DiscoverScreen.tsx
+│   ├── CreatePostScreen.tsx
+│   ├── NotificationsScreen.tsx
+│   ├── ProfileScreen.tsx
+│   ├── UserProfileScreen.tsx
+│   ├── EditProfileScreen.tsx
+│   ├── CommentScreen.tsx
+│   └── SettingsScreen.tsx
+├── navigation/
+│   └── AppNavigator.tsx      # Auth stack + main stack + 5-tab bar
+├── store/
+│   ├── store.ts
+│   ├── hooks.ts
+│   └── slices/               # authSlice, postsSlice, likesSlice
+├── services/
+│   ├── auth.ts               # Firebase Auth service
+│   ├── posts.ts              # Firestore posts service
+│   ├── profile.ts            # Firestore profile service
+│   └── notifications.ts      # FCM service
+├── theme/
+│   ├── index.ts              # Design tokens (palette, spacing, radius, typography)
+│   ├── ThemeContext.tsx       # ThemeProvider + useTheme() hook
+│   ├── colors.ts
+│   ├── spacing.ts
+│   ├── radius.ts
+│   └── typography.ts
+├── hooks/
+│   ├── useRealtimeSync.ts    # socket.io event listeners
+│   └── useNotifications.ts   # FCM registration + foreground listener
+├── config/
+│   ├── firebase.ts
+│   └── socialRealtime.ts     # connectSocket / disconnectSocket
+├── utils/
+│   ├── responsive.ts         # wp(), hp(), isSmallDevice()
+│   ├── haptics.ts            # hapticLight/Medium/Heavy/Success/Error
+│   └── date.ts
+└── types/
+    ├── navigation.ts
+    └── social.ts
 ```
 
-## Step 2: Build and run your app
+---
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+## Design System
+
+All UI is built on a centralized theme layer. Use `useTheme()` from `src/theme/ThemeContext.tsx` in every component — never hardcode hex colors.
+
+### Color Tokens
+
+| Token | Value |
+|---|---|
+| Primary | `#6C63FF` |
+| Accent | `#FF6584` |
+| Success | `#22C55E` |
+| Error | `#EF4444` |
+| Dark background | `#0F0F13` |
+| Dark surface | `#1A1A22` |
+
+### Spacing (8pt grid)
+`xs=4` · `sm=8` · `md=16` · `lg=24` · `xl=32` · `2xl=48`
+
+### Border Radius
+`button=14` · `card=20` · `avatar=9999` · `input=14` · `sheet=28`
+
+### Tab Bar
+- Floating pill, 16px above home indicator, 20px side margins, 28px border radius
+- Glass background with automatic dark mode variant
+- FAB rises 18px above the pill; tap navigates to CreatePost modal
+- Active tab shows label (height + opacity animated); inactive tabs show icon only
+- Spring-scale bounce animation on tab switch
+
+---
+
+## Firestore Data Model
+
+```
+/users/{uid}
+  displayName, photoURL, bio, fcmToken
+
+/posts/{postId}
+  authorId, content, imageUrl, likedBy: string[], createdAt
+
+/posts/{postId}/comments/{commentId}
+  authorId, text, createdAt
+```
+
+---
+
+## Real-time Events (socket.io)
+
+| Event | Payload |
+|---|---|
+| `like` | `{ postId, likeCount, likedByMe? }` |
+| `comment` | `{ postId, comment: Comment }` |
+
+Socket URL is configured in `src/config/socialRealtime.ts`. Default is `http://10.0.2.2:4000` (Android emulator loopback to host machine).
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node >= 22.11.0
+- React Native CLI environment configured ([Android Studio](https://developer.android.com/studio) / Xcode)
+- Firebase project with **Authentication**, **Firestore**, and **Cloud Messaging** enabled
+- `google-services.json` at `android/app/google-services.json`
+- `GoogleService-Info.plist` at `ios/SocialConnect/GoogleService-Info.plist`
+
+### Install dependencies
+
+```sh
+npm install
+```
 
 ### Android
 
 ```sh
-# Using npm
 npm run android
-
-# OR using Yarn
-yarn android
 ```
 
 ### iOS
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
 ```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
+cd ios && pod install && cd ..
 npm run ios
-
-# OR using Yarn
-yarn ios
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+### Web (dev preview)
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+```sh
+npm run web
+```
 
-## Step 3: Modify your app
+---
 
-Now that you have successfully run the app, let's make changes!
+## Testing
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+```sh
+npm test
+```
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+Firebase module mocks are in `__mocks__/@react-native-firebase/` and wired up via `moduleNameMapper` in `jest.config.js`.
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+---
 
-## Congratulations! :tada:
+## Demo Credentials
 
-You've successfully run and modified your React Native App. :partying_face:
+```
+Email:    demo@socialconnect.dev
+Password: Password123
+```
 
-### Now what?
+---
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+## License
 
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+Private — all rights reserved.
