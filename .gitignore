@@ -35,6 +35,9 @@ local.properties
 !debug.keystore
 .kotlin/
 
+# Firebase
+google-services.json
+
 # node.js
 #
 node_modules/
