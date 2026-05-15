@@ -237,13 +237,6 @@ Firebase module mocks are in `__mocks__/@react-native-firebase/` and wired up vi
 
 ---
 
-## Demo Credentials
-
-```
-Email:    demo@socialconnect.dev
-Password: Password123
-```
-
 ---
 
 ## License
