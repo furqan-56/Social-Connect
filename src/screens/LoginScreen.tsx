@@ -255,7 +255,7 @@ export default function LoginScreen({navigation, route}: Props): React.JSX.Eleme
                   keyboardType="email-address"
                   label="Email address"
                   leftIcon="mail"
-                  onBlur={() => handleBlur('email')({} as any)}
+                  onBlur={() => handleBlur({target: {name: 'email'}} as any)}
                   onChangeText={handleChange('email')}
                   touched={touched.email}
                   value={values.email}
@@ -267,7 +267,7 @@ export default function LoginScreen({navigation, route}: Props): React.JSX.Eleme
                   error={errors.password}
                   label="Password"
                   leftIcon="lock"
-                  onBlur={() => handleBlur('password')({} as any)}
+                  onBlur={() => handleBlur({target: {name: 'password'}} as any)}
                   onChangeText={handleChange('password')}
                   secureTextEntry
                   touched={touched.password}
