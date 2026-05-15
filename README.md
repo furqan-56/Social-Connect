@@ -237,8 +237,6 @@ Firebase module mocks are in `__mocks__/@react-native-firebase/` and wired up vi
 
 ---
 
----
-
 ## License
 
 Private — all rights reserved.
